@@ -1,0 +1,121 @@
+id: tcdrupal_users
+migration_tags:
+  - 'Drupal 7'
+  - Content
+migration_group: tcdrupal
+label: 'TCDrupal User accounts'
+
+source:
+  plugin: tcdrupal_users
+
+process:
+  uid:
+    -
+      plugin: get
+      source: uid
+  name:
+    -
+      plugin: get
+      source: name
+  pass:
+    -
+      plugin: get
+      source: pass
+  mail:
+    -
+      plugin: get
+      source: mail
+  created:
+    -
+      plugin: get
+      source: created
+  access:
+    -
+      plugin: get
+      source: access
+  login:
+    -
+      plugin: get
+      source: login
+  status:
+    -
+      plugin: get
+      source: status
+  timezone:
+    -
+      plugin: get
+      source: timezone
+  langcode:
+    -
+      plugin: user_langcode
+      source: entity_language
+      fallback_to_site_default: false
+  preferred_langcode:
+    -
+      plugin: user_langcode
+      source: language
+      fallback_to_site_default: true
+  preferred_admin_langcode:
+    -
+      plugin: user_langcode
+      source: language
+      fallback_to_site_default: true
+  init:
+    -
+      plugin: get
+      source: init
+  roles:
+    -
+      plugin: migration_lookup
+      migration: upgrade_d7_user_role
+      source: roles
+  user_picture:
+    -
+      plugin: default_value
+      source: picture
+      default_value: null
+    -
+      plugin: migration_lookup
+      migration: upgrade_d7_file
+  field_first_name:
+    -
+      plugin: get
+      source: field_first_name
+  field_last_name:
+    -
+      plugin: get
+      source: field_last_name
+  field_company:
+    -
+      plugin: get
+      source: field_company
+  field_registration_do_username:
+    -
+      plugin: get
+      source: field_registration_do_username
+  field_hide_public_display_:
+    -
+      plugin: get
+      source: field_hide_public_display_
+  field_drupal_experience:
+    -
+      plugin: get
+      source: field_drupal_experience
+  field_drupal_relationship:
+    -
+      plugin: get
+      source: field_drupal_relationship
+  field_previous_camps:
+    -
+      plugin: get
+      source: field_previous_camps
+  field_user_sponsor:
+    -
+      plugin: get
+      source: field_user_sponsor
+
+destination:
+  plugin: 'entity:user'
+
+migration_dependencies:
+  required: {}

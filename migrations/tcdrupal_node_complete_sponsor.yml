@@ -1,0 +1,136 @@
+id: tcdrupal_node_complete_sponsor
+
+field_plugin_method: null
+cck_plugin_method: null
+migration_tags:
+  - 'Drupal 7'
+  - Content
+migration_group: tcdrupal
+label: 'Node complete (Sponsor)'
+
+source:
+  plugin: d7_node_complete
+  node_type: sponsor
+  constants:
+    TWITTER_URL: 'https://twitter.com/'
+
+process:
+  nid:
+    -
+      plugin: get
+      source: tnid
+  vid:
+    -
+      plugin: get
+      source: vid
+  langcode:
+    -
+      plugin: default_value
+      source: language
+      default_value: und
+  title:
+    -
+      plugin: get
+      source: title
+  uid:
+    -
+      plugin: get
+      source: node_uid
+  status:
+    -
+      plugin: get
+      source: status
+  created:
+    -
+      plugin: get
+      source: created
+  changed:
+    -
+      plugin: get
+      source: timestamp
+  promote:
+    -
+      plugin: get
+      source: promote
+  sticky:
+    -
+      plugin: get
+      source: sticky
+  revision_uid:
+    -
+      plugin: get
+      source: revision_uid
+  revision_log:
+    -
+      plugin: get
+      source: log
+  revision_timestamp:
+    -
+      plugin: get
+      source: timestamp
+  content_translation_source:
+    -
+      plugin: get
+      source: source_langcode
+  comment_node_sponsor/0/status:
+    -
+      plugin: get
+      source: comment
+  field_sponsor_logo:
+    -
+      plugin: sub_process
+      source: field_sponsor_logo
+      process:
+        target_id: fid
+        alt: alt
+        title: title
+        width: width
+        height: height
+  field_sponsor_level:
+    -
+      plugin: get
+      source: field_sponsor_level
+  field_sponsor_url:
+    -
+      plugin: get
+      source: field_sponsor_url
+
+  field_twitter_profile/title:
+    -
+      plugin: skip_on_empty
+      method: process
+      source: field_sponsor_twitter_handle/0/value
+    -
+      plugin: get
+      source: field_sponsor_twitter_handle/0/value
+
+  _pseudo_twitter_handle:
+    -
+      plugin: skip_on_empty
+      method: process
+      source: field_sponsor_twitter_handle/0/value
+    -
+      plugin: substr
+      start: 1
+      source: field_sponsor_twitter_handle/0/value
+
+  field_twitter_profile/uri:
+    -
+      plugin: skip_on_empty
+      method: process
+      source: field_sponsor_twitter_handle/0/value
+    -
+      plugin: concat
+      delimiter: ""
+      source:
+        - constants/TWITTER_URL
+        - '@_pseudo_twitter_handle'
+
+destination:
+  plugin: 'entity_complete:node'
+  translations: true
+  default_bundle: sponsor
+
+migration_dependencies:
+  required:
+    - tcdrupal_user

@@ -1,0 +1,44 @@
+id: tcdrupal_paragraphs_revisions_quotes
+
+field_plugin_method: null
+cck_plugin_method: null
+migration_tags:
+  - 'Drupal 7'
+  - Content
+  - 'Paragraphs Revisions Content'
+migration_group: tcdrupal
+label: 'Paragraphs Revisions (quotes)'
+source:
+  plugin: d7_paragraphs_item_revision
+  bundle: quotes
+process:
+  id:
+    -
+      plugin: paragraphs_lookup
+      tags:
+        - 'Paragraphs Content'
+      source: item_id
+    -
+      plugin: extract
+      index:
+        - id
+  type:
+    -
+      plugin: get
+      source: bundle
+  field_paragraph_author:
+    -
+      plugin: get
+      source: field_paragraph_author
+  field_paragraph_quote:
+    -
+      plugin: get
+      source: field_paragraph_quote
+destination:
+  plugin: 'entity_reference_revisions:paragraph'
+  new_revisions: true
+  default_bundle: quotes
+migration_dependencies:
+  required:
+    - tcdrupal_paragraphs_blurb_with_image
+    - tcdrupal_paragraphs_quotes

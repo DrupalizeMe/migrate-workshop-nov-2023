@@ -1,0 +1,99 @@
+id: tcdrupal_node_complete_timeslot
+
+field_plugin_method: null
+cck_plugin_method: null
+migration_tags:
+  - 'Drupal 7'
+  - Content
+migration_group: tcdrupal
+label: 'Node complete (Timeslot)'
+source:
+  plugin: d7_node_complete
+  node_type: timeslot
+process:
+  nid:
+    -
+      plugin: get
+      source: tnid
+  vid:
+    -
+      plugin: get
+      source: vid
+  langcode:
+    -
+      plugin: default_value
+      source: language
+      default_value: und
+  title:
+    -
+      plugin: get
+      source: title
+  uid:
+    -
+      plugin: get
+      source: node_uid
+  status:
+    -
+      plugin: get
+      source: status
+  created:
+    -
+      plugin: get
+      source: created
+  changed:
+    -
+      plugin: get
+      source: timestamp
+  promote:
+    -
+      plugin: get
+      source: promote
+  sticky:
+    -
+      plugin: get
+      source: sticky
+  revision_uid:
+    -
+      plugin: get
+      source: revision_uid
+  revision_log:
+    -
+      plugin: get
+      source: log
+  revision_timestamp:
+    -
+      plugin: get
+      source: timestamp
+  content_translation_source:
+    -
+      plugin: get
+      source: source_langcode
+  comment_node_timeslot/0/status:
+    -
+      plugin: get
+      source: comment
+  field_timeslot:
+    -
+      plugin: sub_process
+      source: field_timeslot
+      process:
+        value:
+          plugin: format_date
+          from_format: 'Y-m-d H:i:s'
+          to_format: 'Y-m-d\TH:i:s'
+          source: value
+  field_day:
+    -
+      plugin: get
+      source: field_day
+  field_day_of_week:
+    -
+      plugin: get
+      source: field_day_of_week
+destination:
+  plugin: 'entity_complete:node'
+  translations: true
+  default_bundle: timeslot
+migration_dependencies:
+  required:
+    - tcdrupal_user

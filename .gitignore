@@ -1,0 +1,8 @@
+# Ignore IDE files
+/.idea/
+/.vscode/
+*.iml
+*.code-workspace
+
+.DS_Store
+

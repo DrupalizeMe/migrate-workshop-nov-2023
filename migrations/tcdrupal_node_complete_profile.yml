@@ -1,0 +1,179 @@
+id: tcdrupal_node_complete_profile
+class: Drupal\node\Plugin\migrate\D7NodeTranslation
+field_plugin_method: null
+cck_plugin_method: null
+migration_tags:
+  - 'Drupal 7'
+  - Content
+migration_group: migrate_drupal_7
+label: 'Node complete (Profile)'
+
+source:
+  plugin: d7_node_complete
+  node_type: profile
+
+process:
+  nid:
+    -
+      plugin: get
+      source: tnid
+  vid:
+    -
+      plugin: get
+      source: vid
+  langcode:
+    -
+      plugin: default_value
+      source: language
+      default_value: und
+  title:
+    -
+      plugin: get
+      source: title
+  uid:
+    -
+      plugin: get
+      source: node_uid
+  status:
+    -
+      plugin: get
+      source: status
+  created:
+    -
+      plugin: get
+      source: created
+  changed:
+    -
+      plugin: get
+      source: timestamp
+  promote:
+    -
+      plugin: get
+      source: promote
+  sticky:
+    -
+      plugin: get
+      source: sticky
+  revision_uid:
+    -
+      plugin: get
+      source: revision_uid
+  revision_log:
+    -
+      plugin: get
+      source: log
+  revision_timestamp:
+    -
+      plugin: get
+      source: timestamp
+  content_translation_source:
+    -
+      plugin: get
+      source: source_langcode
+  comment_node_profile/0/status:
+    -
+      plugin: get
+      source: comment
+  field_addresses:
+    -
+      plugin: sub_process
+      source: field_addresses
+      process:
+        target_id:
+          -
+            plugin: paragraphs_lookup
+            tags: 'Field Collection Content'
+            source: value
+          -
+            plugin: extract
+            index:
+              - id
+        target_revision_id:
+          -
+            plugin: paragraphs_lookup
+            tags:
+              - 'Field Collection Revisions Content'
+              - 'Field Collection Content'
+            tag_ids:
+              'Field Collection Revisions Content':
+                - revision_id
+              'Field Collection Content':
+                - value
+          -
+            plugin: extract
+            index:
+              - revision_id
+  field_quotes:
+    -
+      plugin: sub_process
+      source: field_quotes
+      process:
+        target_id:
+          -
+            plugin: paragraphs_lookup
+            tags: 'Paragraphs Content'
+            source: value
+          -
+            plugin: extract
+            index:
+              - id
+        target_revision_id:
+          -
+            plugin: paragraphs_lookup
+            tags:
+              - 'Paragraphs Revisions Content'
+              - 'Paragraphs Content'
+            tag_ids:
+              'Paragraphs Revisions Content':
+                - revision_id
+              'Paragraphs Content':
+                - value
+            source: value
+          -
+            plugin: extract
+            index:
+              - revision_id
+  field_related_sessions:
+    -
+      plugin: get
+      source: field_related_sessions
+  field_related_sponsors:
+    -
+      plugin: get
+      source: field_related_sponsors
+
+  field_related_content:
+    -
+      plugin: merge
+      source:
+        - field_related_sessions
+        - field_related_sponsors
+    -
+      plugin: sub_process
+      process:
+        target_id:
+          -
+            plugin: migration_lookup
+            source: target_id
+            migration:
+              - upgrade_d7_node_complete_session
+              - upgrade_d7_node_complete_sponsor
+          -
+            plugin: extract
+            index:
+              - 0
+
+destination:
+  plugin: 'entity_complete:node'
+  translations: true
+  default_bundle: profile
+
+migration_dependencies:
+  required:
+    - tcdrupal_user
+    - tcdrupal_field_collection_addresses
+    - tcdrupal_field_collection_revisions_addresses
+    - tcdrupal_paragraphs_blurb_with_image
+    - tcdrupal_paragraphs_quotes
+    - tcdrupal_paragraphs_revisions_blurb_with_image
+    - tcdrupal_paragraphs_revisions_quotes
